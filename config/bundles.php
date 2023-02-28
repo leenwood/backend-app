@@ -3,6 +3,7 @@
 return [
     App\AccountBundle\AccountBundle::class => ['all' => true],
     App\ApiBundle\ApiBundle::class => ['all' => true],
+    App\AdminBundle\AdminBundle::class => ['all' => true],
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],

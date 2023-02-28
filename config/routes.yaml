@@ -3,3 +3,9 @@ controllers:
         path: ../src/ApiBundle/Controller/
         namespace: App\ApiBundle\Controller
     type: attribute
+
+admin-panel:
+    resource:
+        path: ../src/AdminBundle/Controller/
+        namespace: App\AdminBundle\Controller
+    type: attribute

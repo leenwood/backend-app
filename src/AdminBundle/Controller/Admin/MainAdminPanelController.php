@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ApiBundle\Controller\Admin;
+namespace App\AdminBundle\Controller\Admin;
 
-use App\ApiBundle\Controller\Admin\CRUD\AccountCrudController;
+use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -24,7 +24,7 @@ class MainAdminPanelController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Symfony');
+            ->setTitle('Admin panel');
     }
 
     public function configureMenuItems(): iterable

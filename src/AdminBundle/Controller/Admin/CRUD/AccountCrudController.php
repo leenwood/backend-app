@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ApiBundle\Controller\Admin\CRUD;
+namespace App\AdminBundle\Controller\Admin\CRUD;
 
 use App\AccountBundle\Entity\Account;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
