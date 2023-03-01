@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainAdminPanelController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
+    #[Route('/admin', name: 'admin_panel')]
     public function index(): Response
     {
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
