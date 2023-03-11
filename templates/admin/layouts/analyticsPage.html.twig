@@ -1,0 +1,84 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{# Let\'s remove/empty the header #}
+{% block content_header_wrapper %} {% endblock content_header_wrapper %}
+
+{# The main page content block #}
+{% block main %}
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <div class="container" style="padding-top: 10px">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"><h5 style="float: right"><a href="{{ path('admin_analytics_search_page') }}">Вернуться назад</a></h5></div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h4>
+                    По запросу "{{ queryName }}" было найдено всего {{ vacanciesFound }} найдено.
+                </h4>
+            </div>
+            <div class="col">
+                <a href="{{ path('admin_analytics_download', {"queryName": queryName}) }}"><span style="font-size: 23px"><i class="material-icons">file_download</i> Скачать excel файл</span></a>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        Название навыка
+                    </div>
+                    <div class="col">
+
+                    </div>
+                    <div class="col">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="margin-left: 25px">
+                Название вакансий
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% set countForTable = 1 %}
+                {% for vacancy in vacanciesStats %}
+                    <div class="row" style="{{ countForTable%2==0 ? 'background-color: #434343' : '' }}">
+                        <div class="col">
+                            {{ vacancy.name }}
+                        </div>
+                        <div class="col">
+                            {{ vacancy.count }}
+                        </div>
+                        <div class="col">
+                            {{ vacancy.rate }} %
+                        </div>
+                    </div>
+                    {% set countForTable = countForTable + 1 %}
+                {% endfor %}
+            </div>
+
+            <div class="col" style="margin-left: 25px">
+                {% set countForTable = 1 %}
+                {% for name in vacanciesName %}
+                    <div class="row">
+                        <div class="col" style="{{ countForTable%2==0 ? '' : 'background-color: #434343' }}">
+                            {{ name }}
+                        </div>
+                    </div>
+                    {% set countForTable = countForTable + 1 %}
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+{% endblock main %}
+
+    {# Let\'s remove/empty the footer #}
+    {% block content_footer_wrapper %} {% endblock content_footer_wrapper %}

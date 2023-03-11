@@ -21,9 +21,9 @@ class TestController extends AbstractController
     public function createUser()
     {
         $account = new Account();
-        $account->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-        $account->setPassword($this->hasher->hashPassword($account, 'Admin'));
-        $account->setUsername('Admin');
+        $account->setRoles(['ROLE_USER']);
+        $account->setPassword($this->hasher->hashPassword($account, 'User'));
+        $account->setUsername('User');
         $this->accountRepository->save($account, true);
     }
 }

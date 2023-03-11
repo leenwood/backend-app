@@ -1,0 +1,52 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{# Let\'s remove/empty the header #}
+{% block content_header_wrapper %} {% endblock content_header_wrapper %}
+
+{# The main page content block #}
+{% block main %}
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <div class="container" style="padding-top: 10px">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form action="{{ path('admin_analytics_hh') }}" method="get" class="form-group">
+                    <label for="queryName"
+                           style="text-align: center; width: 100%; font-size: 23px; padding-bottom: 15px">
+                        Мне повезет!
+                    </label>
+                    <input name="queryName" id="queryName" type="text" class="form-control" placeholder="php">
+                    <input type="submit" class="btn btn-primary mb-2" style="float: right; margin: 15px; padding: 7px 10px" value="Поехали!">
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row" style="margin-bottom: 20px; margin-top: 50px;">
+            <div class="col"></div>
+            <div class="col" style="text-align: center"><h4>Инструкция</h4></div>
+            <div class="col"></div>
+        </div>
+        <div class="row" style="clear: both">
+
+            <div class="col">
+                <p>
+                    Стоит понимать что в данный момент на бекенде не реализованн никакой полноценный поиск, поэтому идет
+                    поиск по стандартной sql функции LIKE. То есть ищет вхождение в строку.
+                    Поэтому к данным лучше относиться с подозрением, например если с python проблем не будет, то с Java
+                    Также может найтись и JavaScript, потому что Java входит в подстроку.
+                </p>
+            </div>
+            <div class="col">
+                <p>
+                    Валидации у кнопки отправить, поэтому не надо отправлять пустой запрос и непонтный.
+                </p>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+{% endblock main %}
+
+    {# Let\'s remove/empty the footer #}
+    {% block content_footer_wrapper %} {% endblock content_footer_wrapper %}
