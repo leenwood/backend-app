@@ -52,7 +52,6 @@ class MainAdminPanelController extends AbstractDashboardController
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/admin/analytics/hh', name: 'admin_analytics_hh', )]
     public function analyticsFromHH(
         Request $request
