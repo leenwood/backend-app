@@ -47,8 +47,10 @@ class MainAdminPanelController extends AbstractDashboardController
     {
         yield MenuItem::section('Symfony backend', 'fas fa-angle-double-down');
         yield MenuItem::LinkToCrud('Accounts', 'fas fa-list', Account::class);
+        yield MenuItem::linkToRoute("Donation Wall", 'fas fa-arrow-alt-circle-right', 'app_donation_wall');
         yield MenuItem::section('Other backend', 'fas fa-angle-double-down');
         yield MenuItem::linkToRoute("HH analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_search_page');
+
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 
@@ -99,5 +101,11 @@ class MainAdminPanelController extends AbstractDashboardController
                 'Content-Disposition' => 'attachment; filename='.sprintf("analytics_%s.xlsx", time()),
             )
         );
+    }
+
+    #[Route(path: '/admin/donation/wall', name: 'app_donation_wall')]
+    public function donationWall(): Response
+    {
+        return $this->render('admin\layouts\donationWall.html.twig');
     }
 }
