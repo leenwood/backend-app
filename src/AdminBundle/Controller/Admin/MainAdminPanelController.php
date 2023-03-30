@@ -6,6 +6,8 @@ use App\AccountBundle\Entity\Account;
 use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use App\AdminBundle\Service\DjangoBackendService\RequestService;
+use App\AdminBundle\Service\DonationService\DonateUserService;
+use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
 use DateTime;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -20,8 +22,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class MainAdminPanelController extends AbstractDashboardController
 {
     public function __construct(
-         private RequestService $requestService,
-        private DownloadVacanciesStatsService $downloadVacanciesStatsService
+        private RequestService                $requestService,
+        private DownloadVacanciesStatsService $downloadVacanciesStatsService,
+        private DonateUserService             $donateUserService,
+        private GoalService                   $goalService
     )
     {
     }
@@ -54,12 +58,12 @@ class MainAdminPanelController extends AbstractDashboardController
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 
-    #[Route(path: '/admin/analytics/hh', name: 'admin_analytics_hh', )]
+    #[Route(path: '/admin/analytics/hh', name: 'admin_analytics_hh',)]
     public function analyticsFromHH(
         Request $request
     ): Response
     {
-        if($request->get('queryName') === null or $request->get('queryName') === "") {
+        if ($request->get('queryName') === null or $request->get('queryName') === "") {
             throw new \Exception("need query Name");
         }
 
@@ -74,18 +78,18 @@ class MainAdminPanelController extends AbstractDashboardController
             ]);
     }
 
-    #[Route(path: '/admin/analytics', name: 'admin_analytics_search_page', )]
+    #[Route(path: '/admin/analytics', name: 'admin_analytics_search_page',)]
     public function analyticsFormPageSearch(): Response
     {
         return $this->render('admin\layouts\searchPage.html.twig');
     }
 
-    #[Route(path: '/admin/analytics/download', name: 'admin_analytics_download', )]
+    #[Route(path: '/admin/analytics/download', name: 'admin_analytics_download',)]
     public function downloadFileAnalytics(
         Request $request
     ): Response
     {
-        if($request->get('queryName') === null) {
+        if ($request->get('queryName') === null) {
             throw new \Exception("need query Name");
         }
 
@@ -98,7 +102,7 @@ class MainAdminPanelController extends AbstractDashboardController
             200,
             array(
                 'Content-Type' => 'application/vnd.ms-excel',
-                'Content-Disposition' => 'attachment; filename='.sprintf("analytics_%s.xlsx", time()),
+                'Content-Disposition' => 'attachment; filename=' . sprintf("analytics_%s.xlsx", time()),
             )
         );
     }
@@ -106,6 +110,12 @@ class MainAdminPanelController extends AbstractDashboardController
     #[Route(path: '/admin/donation/wall', name: 'app_donation_wall')]
     public function donationWall(): Response
     {
-        return $this->render('admin\layouts\donationWall.html.twig');
+        $goal = $this->goalService->findById(1);
+        $donationUsers = $this->donateUserService->getUserByGoal($goal);
+
+        return $this->render('admin\layouts\donationWall.html.twig', [
+            'goal' => $goal,
+            'donationUsers' => $donationUsers
+        ]);
     }
 }

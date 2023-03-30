@@ -2,7 +2,9 @@
 
 namespace App\AdminBundle\Exception;
 
-class NotFoundException
+use Exception;
+
+class NotFoundException extends Exception
 {
 
 }
