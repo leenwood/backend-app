@@ -8,12 +8,45 @@
     <head>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
-    <div class="container" style="padding-top: 10px">
-        <div class="row">
+    <div class="container" style="padding-top: 10px;">
+        <div class="row" style="max-width: 60%; min-width: 500px; margin: 0 auto;">
+            <div class="col">
+                Цель:
+            </div>
             <div class="col">
 
             </div>
+            <div class="col">
+                Описание:
+            </div>
+        </div>
+        <div class="row" style="max-width: 60%; min-width: 500px; margin: 20px auto;">
+            <div class="col">
+                {{ goal.name }}
+            </div>
+            <div class="col">
 
+            </div>
+            <div class="col">
+                {{ goal.description }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="max-width: 60%; min-width: 500px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col">Имя</div>
+                    <div class="col">Дата доната</div>
+                    <div class="col">Сумма доната</div>
+                </div>
+                <hr>
+                {% for donateUser in donationUsers %}
+                    <div class="row">
+                        <div class="col">{{ donateUser.username }}</div>
+                        <div class="col">{{ donateUser.donateDate|date('d-m-Y') }}</div>
+                        <div class="col">{{ donateUser.donationSum }}</div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock main %}
