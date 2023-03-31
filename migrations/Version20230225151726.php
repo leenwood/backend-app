@@ -21,7 +21,7 @@ final class Version20230225151726 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql("
-            INSERT INTO account (id, username, roles, password) VALUES (NULL, 'Admin', '[\"ROLE_USER\", \"ROLE_ADMIN\"]', '$2y$13\$yBsjgFnrzJNUKv9H3Lfhf.ypC48jjIRWpwdjVOYYl5qpZOKEo8B5C')
+            INSERT INTO account (id, username, roles, password) VALUES (1, 'Admin', '[\"ROLE_USER\", \"ROLE_ADMIN\"]', '$2y$13\$yBsjgFnrzJNUKv9H3Lfhf.ypC48jjIRWpwdjVOYYl5qpZOKEo8B5C')
         ");
     }
 
