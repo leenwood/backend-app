@@ -1,0 +1,39 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{# Let\'s remove/empty the header #}
+{% block content_header_wrapper %} {% endblock content_header_wrapper %}
+
+{# The main page content block #}
+{% block main %}
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <div class="container" style="padding-top: 10px">
+        <div class="row">
+            <div class="col">
+                <form action="{{ path('admin_analytics_openai_action') }}" method="get" class="form-group">
+                    <label for="queryName"
+                           style="text-align: center; width: 100%; font-size: 23px; padding-bottom: 15px">
+                        Мне повезет!
+                    </label>
+                    <input name="queryName" id="queryName" type="text" class="form-control" placeholder="Введите значение">
+                    <input type="submit" class="btn btn-primary mb-2" style="float: right; margin: 15px; padding: 7px 10px" value="Поехали!">
+                </form>
+            </div>
+        </div>
+        {% if defined(previousRequests) %}
+            <div class="row">
+                {% set firstFive = previousRequests|slice(0,5) %}
+                {% for item in firstFive %}
+                <div class="col">item.id</div>
+                <div class="col">item.input</div>
+                <div class="col">item.competencies</div>
+                <div class="col">item.profession</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock main %}
+
+    {# Let\'s remove/empty the footer #}
+    {% block content_footer_wrapper %} {% endblock content_footer_wrapper %}

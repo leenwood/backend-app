@@ -8,6 +8,7 @@ use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use App\AdminBundle\Service\DjangoBackendService\RequestService;
 use App\AdminBundle\Service\DonationService\DonateUserService;
 use App\AdminBundle\Service\DonationService\GoalService;
+use App\AdminBundle\Service\OpenAiService\OpenAiService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
 use DateTime;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -25,7 +26,8 @@ class MainAdminPanelController extends AbstractDashboardController
         private RequestService                $requestService,
         private DownloadVacanciesStatsService $downloadVacanciesStatsService,
         private DonateUserService             $donateUserService,
-        private GoalService                   $goalService
+        private GoalService                   $goalService,
+        private OpenAiService                 $openAiService
     )
     {
     }
@@ -54,6 +56,7 @@ class MainAdminPanelController extends AbstractDashboardController
         yield MenuItem::linkToRoute("Donation Wall", 'fas fa-arrow-alt-circle-right', 'app_donation_wall');
         yield MenuItem::section('Other backend', 'fas fa-angle-double-down');
         yield MenuItem::linkToRoute("HH analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_search_page');
+        yield MenuItem::linkToRoute("OpenAI analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_openai_page');
 
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
@@ -116,6 +119,29 @@ class MainAdminPanelController extends AbstractDashboardController
         return $this->render('admin\layouts\donationWall.html.twig', [
             'goal' => $goal,
             'donationUsers' => $donationUsers
+        ]);
+    }
+
+    #[Route(path: '/admin/analytics/openai/question', name: 'admin_analytics_openai_page',)]
+    public function analyticsOpenAiPage(): Response
+    {
+        $previousRequests = $this->openAiService->getAll();
+
+        return $this->render('admin\layouts\openaiPage.html.twig', [
+            'previousRequests' => $previousRequests,
+        ]);
+    }
+
+    #[Route(path: '/admin/analytics/openai/answer', name: 'admin_analytics_openai_action',)]
+    public function analyticsOpenAiAction($request): Response
+    {
+        if ($request->get('queryName') === null or $request->get('queryName') === "") {
+            throw new \Exception("need query Name");
+        }
+
+        $answer = $this->openAiService->getAnswerByMessage($request->get('queryName'));
+        return $this->render('admin\layouts\openaiActionPage.html.twig', [
+            'answer' => $answer,
         ]);
     }
 }
