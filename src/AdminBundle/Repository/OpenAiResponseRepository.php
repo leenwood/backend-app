@@ -1,8 +1,8 @@
 <?php
 
-namespace App\AdminBundle\Service\OpenAiService\Repository;
+namespace App\AdminBundle\Repository;
 
-use App\AdminBundle\Service\OpenAiService\Entity\OpenAiResponse;
+use App\AdminBundle\Entity\OpenAiResponse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

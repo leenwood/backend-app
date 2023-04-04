@@ -1,8 +1,8 @@
 <?php
 
-namespace App\AdminBundle\Service\OpenAiService\Entity;
+namespace App\AdminBundle\Entity;
 
-use App\AdminBundle\Service\OpenAiService\Repository\OpenAiResponseRepository;
+use App\AdminBundle\Repository\OpenAiResponseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OpenAiResponseRepository::class)]
@@ -24,8 +24,27 @@ class OpenAiResponse
     #[ORM\Column]
     private ?array $competencies = [];
 
-    #[ORM\Column(type: 'string')]
-    private ?string $profession = null;
+    #[ORM\Column]
+    private ?array $profession = [];
+
+    #[ORM\Column(type: 'text')]
+    private ?string $courseName = null;
+
+    /**
+     * @return string|null
+     */
+    public function getCourseName(): ?string
+    {
+        return $this->courseName;
+    }
+
+    /**
+     * @param string|null $courseName
+     */
+    public function setCourseName(?string $courseName): void
+    {
+        $this->courseName = $courseName;
+    }
 
     /**
      * @return string|null
@@ -60,17 +79,17 @@ class OpenAiResponse
     }
 
     /**
-     * @return string|null
+     * @return array
      */
-    public function getProfession(): ?string
+    public function getProfession(): array
     {
         return $this->profession;
     }
 
     /**
-     * @param string|null $profession
+     * @param array|null $profession
      */
-    public function setProfession(?string $profession): void
+    public function setProfession(?array $profession): void
     {
         $this->profession = $profession;
     }

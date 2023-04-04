@@ -4,21 +4,21 @@ namespace App\AdminBundle\Controller\Admin;
 
 use App\AccountBundle\Entity\Account;
 use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
-use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
+use App\AdminBundle\Entity\OpenAiResponse;
+use App\AdminBundle\Repository\OpenAiResponseRepository;
 use App\AdminBundle\Service\DjangoBackendService\RequestService;
 use App\AdminBundle\Service\DonationService\DonateUserService;
 use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\OpenAiService\OpenAiService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
-use DateTime;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MainAdminPanelController extends AbstractDashboardController
 {
@@ -27,7 +27,8 @@ class MainAdminPanelController extends AbstractDashboardController
         private DownloadVacanciesStatsService $downloadVacanciesStatsService,
         private DonateUserService             $donateUserService,
         private GoalService                   $goalService,
-        private OpenAiService                 $openAiService
+        private OpenAiService                 $openAiService,
+        private LoggerInterface               $logger
     )
     {
     }
@@ -126,22 +127,51 @@ class MainAdminPanelController extends AbstractDashboardController
     public function analyticsOpenAiPage(): Response
     {
         $previousRequests = $this->openAiService->getAll();
+        $requestConfiguration = $this->openAiService->getConfigurator();
 
         return $this->render('admin\layouts\openaiPage.html.twig', [
             'previousRequests' => $previousRequests,
+            'configurator' => $requestConfiguration
         ]);
     }
 
     #[Route(path: '/admin/analytics/openai/answer', name: 'admin_analytics_openai_action',)]
-    public function analyticsOpenAiAction($request): Response
+    public function analyticsOpenAiAction(Request $request, OpenAiResponseRepository $em): Response
     {
-        if ($request->get('queryName') === null or $request->get('queryName') === "") {
+
+        $requestConfiguration = $this->openAiService->getConfigurator();
+
+        $courseDescription = $request->get('openai-data');
+        $courseName = $request->get('course-name');
+
+        if ($courseDescription === null or $courseDescription === "") {
             throw new \Exception("need query Name");
         }
 
-        $answer = $this->openAiService->getAnswerByMessage($request->get('queryName'));
-        return $this->render('admin\layouts\openaiActionPage.html.twig', [
-            'answer' => $answer,
+        try {
+            $answer = $this->openAiService->getAnswerByMessage($request->get('openai-data'));
+
+            $openaiResponse = new OpenAiResponse();
+            $openaiResponse->setInput($courseDescription);
+            $openaiResponse->setCompetencies($answer['competencies']);
+            $openaiResponse->setProfession($answer['profession']);
+            $openaiResponse->setCourseName($courseName);
+
+            $this->openAiService->save($openaiResponse);
+
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage(), ['channel' => 'open_ai_logger']);
+        }
+
+        $previousRequests = $this->openAiService->getAll();
+
+
+//        return $this->render('admin\layouts\openaiActionPage.html.twig', [
+//            'answer' => $openaiResponse,
+//        ]);
+        return $this->render('admin\layouts\openaiPage.html.twig', [
+            'previousRequests' => $previousRequests,
+            'configurator' => $requestConfiguration
         ]);
     }
 }

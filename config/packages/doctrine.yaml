@@ -16,11 +16,6 @@ doctrine:
                 dir: '%kernel.project_dir%/src/AccountBundle/Entity'
                 prefix: 'App\AccountBundle\Entity'
                 alias: App
-            OpenAIService:
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/AdminBundle/Service/OpenAiService/Entity'
-                prefix: 'App\AdminBundle\Service\OpenAiService\Entity'
-                alias: OpenAiResponseRepository
 
 when@test:
     doctrine:
