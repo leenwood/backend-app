@@ -1,0 +1,85 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{# Let\'s remove/empty the header #}
+{% block content_header_wrapper %} {% endblock content_header_wrapper %}
+
+{# The main page content block #}
+{% block main %}
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <div class="container" style="padding-top: 10px">
+        <label
+               style="text-align: center; width: 100%; font-size: 23px; padding-bottom: 15px">
+            Предзапросные данные
+        </label>
+        {% if configurator is defined %}
+            <div class="row">
+                <h6>Определение слова компетенция:</h6>
+                <div class="row">
+                    {{ configurator.definition }}
+                </div>
+                <h6>Представление нейросети как:</h6>
+                <div class="row">
+                    {{ configurator.imagine }}
+                </div>
+                <h6>Тело запроса:</h6>
+                <div class="row">
+                    {{ configurator.body }}
+                </div>
+                <h6>Стилизация ответа:</h6>
+                <div class="row">
+                    {{ configurator.outputStyle }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <label
+                    style="text-align: center; width: 100%; font-size: 23px; padding-bottom: 15px">
+                Запрос!
+            </label>
+            <div class="col">
+                <form action="{{ path('admin_analytics_openai_action') }}" method="post" class="form-group">
+                    <input name="course-name" id="course-name" type="text" class="p-2 mb-2 form-control" style="color:black" placeholder="Название курса">
+                    <textarea name="openai-data" id="queryName" type="text" class="form-control h-500" placeholder="Описание курса" style="color:black; height: 300px"></textarea>
+                    <input type="submit" class="btn btn-primary mb-2" style="float: right; margin: 15px; padding: 7px 10px" value="Поехали!">
+                </form>
+            </div>
+        </div>
+        {% if previousRequests is defined %}
+            <div class="row">
+            <div class="col-1">id</div>
+            <div class="col-1">name</div>
+            <div class="col-7">input</div>
+            <div class="col">competenceis</div>
+            <div class="col">professions</div>
+            </div>
+                {% set firstFive = previousRequests|slice(-5)|reverse %}
+
+                {% for item in firstFive %}
+                    <div class="row p-2">
+                        <div class="col-1">{{ item.id }}</div>
+                        <div class="col-1" style="overflow: hidden;  word-wrap: break-word;">{{ item.courseName }}</div>
+                        <div class="col-7">{{ item.input }}</div>
+                        <div class="col">
+                            {% for competence in item.competencies  %}
+                                <div class="row">
+                                    - {{ competence }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col">
+                            {% for profession in item.profession  %}
+                                <div class="row">
+                                    - {{ profession }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+        {% endif %}
+    </div>
+{% endblock main %}
+
+    {% block content_footer_wrapper %} {% endblock content_footer_wrapper %}
