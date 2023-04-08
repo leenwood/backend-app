@@ -3,6 +3,7 @@
 namespace App\AdminBundle\Service\DjangoBackendService;
 
 
+use App\AdminBundle\Exception\DjangoServiceException\NotFoundVacanciesException;
 use App\AdminBundle\Exception\DjangoServiceException\ServerErrorException;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacanciesListResponse;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
@@ -19,6 +20,7 @@ class RequestService
 
     public function getVacanciesListByName(string $name): VacanciesListResponse
     {
+        throw new NotFoundVacanciesException();
         $client = new Client([
             'base_uri' => RequestService::BASE_URL
         ]);
@@ -32,6 +34,11 @@ class RequestService
 
 
         $response = json_decode($response->getBody()->getContents(), true);
+
+        if((int)$response['vacanciesFound'] <= 0) {
+            throw new NotFoundVacanciesException();
+        }
+
         $vacanciesStats = [];
         foreach ($response['vacanciesStats'] as $vacanciesStat) {
             $vacanciesStats[] = new VacancySkillStat(
