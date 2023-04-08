@@ -20,7 +20,6 @@ class RequestService
 
     public function getVacanciesListByName(string $name): VacanciesListResponse
     {
-        throw new NotFoundVacanciesException();
         $client = new Client([
             'base_uri' => RequestService::BASE_URL
         ]);
