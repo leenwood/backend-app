@@ -6,7 +6,9 @@ use App\AccountBundle\Entity\Account;
 use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
 use App\AdminBundle\Entity\OpenAiResponse;
 use App\AdminBundle\Repository\OpenAiResponseRepository;
-use App\AdminBundle\Service\DjangoBackendService\RequestService;
+use App\AdminBundle\Service\DjangoBackendService\DjangoService;
+use App\AdminBundle\Service\DjangoBackendService\DTO\VacanciesListResponse;
+use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use App\AdminBundle\Service\DonationService\DonateUserService;
 use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\OpenAiService\OpenAiService;
@@ -23,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainAdminPanelController extends AbstractDashboardController
 {
     public function __construct(
-        private RequestService                $requestService,
+        private DjangoService                 $djangoService,
         private DownloadVacanciesStatsService $downloadVacanciesStatsService,
         private DonateUserService             $donateUserService,
         private GoalService                   $goalService,
@@ -71,14 +73,24 @@ class MainAdminPanelController extends AbstractDashboardController
             throw new \Exception("need query Name");
         }
 
-        $vacanciesList = $this->requestService->getVacanciesListByName($request->get('queryName'));
+        $vacanciesList = new VacanciesListResponse(0, [new VacancySkillStat("null", 0, 0.0)], ['null']);
+
+        try {
+            $vacanciesList = $this->djangoService->getVacanciesListByName($request->get('queryName'));
+        } catch (\Throwable $e) {
+            $errorMessage = $e->getMessage();
+            $success = false;
+        }
+
 
         return $this->render('admin\layouts\analyticsPage.html.twig',
             [
                 'queryName' => $request->get('queryName'),
                 'vacanciesFound' => $vacanciesList->getVacanciesFound(),
                 'vacanciesStats' => $vacanciesList->getVacanciesStats(),
-                'vacanciesName' => $vacanciesList->getVacanciesNames()
+                'vacanciesName' => $vacanciesList->getVacanciesNames(),
+                'success' => $success,
+                'errorMessage' => $errorMessage
             ]);
     }
 
@@ -96,8 +108,12 @@ class MainAdminPanelController extends AbstractDashboardController
         if ($request->get('queryName') === null) {
             throw new \Exception("need query Name");
         }
+        try {
+            $vacanciesList = $this->djangoService->getVacanciesListByName($request->get('queryName'));
+        } catch (\Exception $e) {
+            dd();
+        }
 
-        $vacanciesList = $this->requestService->getVacanciesListByName($request->get('queryName'));
         $response = $this->downloadVacanciesStatsService->get("HH", $vacanciesList->getVacanciesFound(), $vacanciesList->getVacanciesStats(), $vacanciesList->getVacanciesNames());
         ob_start();
         $response->save('php://output');
