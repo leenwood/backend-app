@@ -3,9 +3,11 @@
 namespace App\AdminBundle\Service\DjangoBackendService;
 
 
+use App\AdminBundle\Exception\DjangoServiceException\ServerErrorException;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacanciesListResponse;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ServerException;
 
 class RequestService
 {
@@ -20,7 +22,15 @@ class RequestService
         $client = new Client([
             'base_uri' => RequestService::BASE_URL
         ]);
-        $response = $client->get(RequestService::VACANCIES_LIST_BY_NAME_URI.$name, []);
+
+        try {
+            $response = $client->get(RequestService::VACANCIES_LIST_BY_NAME_URI.$name, []);
+        } catch (ServerException $e) {
+            throw new ServerErrorException(sprintf("Django Backend returned %s code", $e->getCode()));
+        }
+
+
+
         $response = json_decode($response->getBody()->getContents(), true);
         $vacanciesStats = [];
         foreach ($response['vacanciesStats'] as $vacanciesStat) {
