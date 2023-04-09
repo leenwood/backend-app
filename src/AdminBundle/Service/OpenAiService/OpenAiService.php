@@ -3,6 +3,7 @@
 namespace App\AdminBundle\Service\OpenAiService;
 
 use App\AdminBundle\Repository\OpenAiResponseRepository;
+use App\AdminBundle\Service\Settings\MainSettingsService;
 use OpenAI;
 
 class OpenAiService
@@ -11,7 +12,8 @@ class OpenAiService
     public function __construct(
         private string $apiKey,
         private OpenAIResponseRepository $openAIResponseRepository,
-        private readonly CompetenciesRequestConfigurator $competenciesRequestConfigurator
+        private readonly CompetenciesRequestConfigurator $competenciesRequestConfigurator,
+        private MainSettingsService $mainSettingsService
     )
     {
     }
@@ -36,7 +38,14 @@ class OpenAiService
 
     public function getAnswerByMessage($prompt): mixed
     {
-        $client = OpenAI::client($this->apiKey);
+        $settings = $this->mainSettingsService->findSettingsById(1);
+        if(is_null($settings->getOpenAIApiKey())) {
+            $apiKey = $this->apiKey;
+        } else {
+            $apiKey = $settings->getOpenAIApiKey();
+        }
+
+        $client = OpenAI::client($apiKey);
 
         $competenceDefinition = 'Тебе дано определение слова Профессиональная компетенция: Профессиональная компетенция - это знания, умения и опыт, необходимые для работы в конкретной профессии. Она включает теоретические основы, практическое применение и опыт работы.';
         $competenceDefinition = $this->competenciesRequestConfigurator->definition;

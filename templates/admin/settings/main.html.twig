@@ -1,0 +1,48 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block content_header_wrapper %} {% endblock content_header_wrapper %}
+
+{# The main page content block #}
+{% block main %}
+    <div class="container">
+        {{ form_start(form, {'action': path('app_settings_update'), 'method': 'POST'}) }}
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label>{{ form_label(form.openAIApiKey) }}</label>
+
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_errors(form.openAIApiKey) }}
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_widget(form.openAIApiKey) }}
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_help(form.openAIApiKey) }}
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+        </div>
+        {{ form_row(form.submit, { "type": "submit"}) }}
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

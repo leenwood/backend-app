@@ -5,6 +5,8 @@ namespace App\AdminBundle\Controller\Admin;
 use App\AccountBundle\Entity\Account;
 use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
 use App\AdminBundle\Entity\OpenAiResponse;
+use App\AdminBundle\Entity\Settings;
+use App\AdminBundle\Form\SettingsType;
 use App\AdminBundle\Repository\OpenAiResponseRepository;
 use App\AdminBundle\Service\DjangoBackendService\DjangoService;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacanciesListResponse;
@@ -12,6 +14,7 @@ use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use App\AdminBundle\Service\DonationService\DonateUserService;
 use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\OpenAiService\OpenAiService;
+use App\AdminBundle\Service\Settings\MainSettingsService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -30,7 +33,8 @@ class MainAdminPanelController extends AbstractDashboardController
         private DonateUserService             $donateUserService,
         private GoalService                   $goalService,
         private OpenAiService                 $openAiService,
-        private LoggerInterface               $logger
+        private LoggerInterface               $logger,
+        private MainSettingsService           $mainSettingsService,
     )
     {
     }
@@ -138,6 +142,37 @@ class MainAdminPanelController extends AbstractDashboardController
             'donationUsers' => $donationUsers
         ]);
     }
+
+    #[Route(path: '/admin/settings/{id}', name: 'app_settings', methods: 'GET')]
+    public function editSettings(
+        int $id
+    ): Response
+    {
+        $settings = $this->mainSettingsService->findSettingsById($id);
+
+        $form = $this->createForm(SettingsType::class, $settings);
+
+        return $this->render('admin\settings\main.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route(path: '/admin/settings', name: 'app_settings_update', methods: 'POST')]
+    public function updateSettings(Request $request): Response
+    {
+
+        $settings = new Settings();
+        $form = $this->createForm(SettingsType::class, $settings);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->mainSettingsService->saveSettings($settings);
+        }
+
+        return $this->redirectToRoute('app_settings', ['id' => $settings->getId()]);
+    }
+
 
     #[Route(path: '/admin/analytics/openai/question', name: 'admin_analytics_openai_page',)]
     public function analyticsOpenAiPage(): Response
