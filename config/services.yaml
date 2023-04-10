@@ -23,7 +23,6 @@ services:
         arguments:
             $apiKey: '%openapi_key%'
 
-    App\AdminBundle\Repoistory:
 
     App\AdminBundle\Service\OpenAiService\CompetenciesRequestConfigurator:
         arguments:
