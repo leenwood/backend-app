@@ -9,6 +9,12 @@ use OpenAI;
 class OpenAiService
 {
 
+    /**
+     * @param string $apiKey
+     * @param OpenAiResponseRepository $openAIResponseRepository
+     * @param CompetenciesRequestConfigurator $competenciesRequestConfigurator
+     * @param MainSettingsService $mainSettingsService
+     */
     public function __construct(
         private string $apiKey,
         private OpenAIResponseRepository $openAIResponseRepository,
@@ -26,24 +32,41 @@ class OpenAiService
         return $this->openAIResponseRepository->findAll();
     }
 
+    /**
+     * @return CompetenciesRequestConfigurator
+     */
     public function getConfigurator(): CompetenciesRequestConfigurator
     {
         return $this->competenciesRequestConfigurator;
     }
 
+    /**
+     * @param $entity
+     * @return void
+     */
     public function save($entity): void
     {
         $this->openAIResponseRepository->save($entity, true);
     }
 
+    /**
+     * @param $prompt
+     * @return mixed
+     */
     public function getAnswerByMessage($prompt): mixed
     {
-        $settings = $this->mainSettingsService->findSettingsById(1);
-        if(is_null($settings->getOpenAIApiKey())) {
+        try {
+            $settings = $this->mainSettingsService->findSettingsById(1);
+            if(is_null($settings->getOpenAIApiKey())) {
+                $apiKey = $this->apiKey;
+            } else {
+                $apiKey = $settings->getOpenAIApiKey();
+            }
+        } catch (\Exception $e) {
             $apiKey = $this->apiKey;
-        } else {
-            $apiKey = $settings->getOpenAIApiKey();
         }
+
+
 
         $client = OpenAI::client($apiKey);
 

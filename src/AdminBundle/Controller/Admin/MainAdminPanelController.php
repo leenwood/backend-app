@@ -60,7 +60,13 @@ class MainAdminPanelController extends AbstractDashboardController
     {
         yield MenuItem::section('Symfony backend', 'fas fa-angle-double-down');
         yield MenuItem::LinkToCrud('Accounts', 'fas fa-list', Account::class);
-        yield MenuItem::linkToRoute("Donation Wall", 'fas fa-arrow-alt-circle-right', 'app_donation_wall');
+        yield MenuItem::linkToRoute("Donation Wall", 'fa-thumbs-up', 'app_donation_wall');
+
+        if(in_array('ROLE_ADMIN', $this->getUser()?->getRoles()))
+        {
+            yield MenuItem::linkToRoute("Settings", 'fa fa-cog', 'app_settings', ['id' => 1]);
+        }
+
         yield MenuItem::section('Other backend', 'fas fa-angle-double-down');
         yield MenuItem::linkToRoute("HH analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_search_page');
         yield MenuItem::linkToRoute("OpenAI analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_openai_page');
