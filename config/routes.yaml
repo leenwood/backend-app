@@ -9,3 +9,7 @@ admin-panel:
         path: ../src/AdminBundle/Controller/
         namespace: App\AdminBundle\Controller
     type: attribute
+
+api_login_check:
+    path: /api/login_check
+    controller: App\ApiBundle\SecurityController::login
