@@ -159,15 +159,15 @@ class MainAdminPanelController extends AbstractDashboardController
         $form = $this->createForm(SettingsType::class, $settings);
 
         return $this->render('admin\settings\main.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'id' => $id
         ]);
     }
 
-    #[Route(path: '/admin/settings', name: 'app_settings_update', methods: 'POST')]
-    public function updateSettings(Request $request): Response
+    #[Route(path: '/admin/settings/{id}', name: 'app_settings_update', methods: 'POST')]
+    public function updateSettings(Request $request, int $id): Response
     {
-
-        $settings = new Settings();
+        $settings = $this->mainSettingsService->findSettingsById($id);
         $form = $this->createForm(SettingsType::class, $settings);
         $form->handleRequest($request);
 

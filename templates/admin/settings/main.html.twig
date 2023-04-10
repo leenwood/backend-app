@@ -5,7 +5,7 @@
 {# The main page content block #}
 {% block main %}
     <div class="container" style="width: 70%; margin: 0 auto;">
-        {{ form_start(form, {'action': path('app_settings_update'), 'method': 'POST'}) }}
+        {{ form_start(form, {'action': path('app_settings_update', {'id': id}), 'method': 'POST'}) }}
         <div class="form-group">
             <div class="row">
                 <div class="col-7">
