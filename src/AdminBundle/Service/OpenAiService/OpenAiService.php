@@ -3,15 +3,23 @@
 namespace App\AdminBundle\Service\OpenAiService;
 
 use App\AdminBundle\Repository\OpenAiResponseRepository;
+use App\AdminBundle\Service\Settings\MainSettingsService;
 use OpenAI;
 
 class OpenAiService
 {
 
+    /**
+     * @param string $apiKey
+     * @param OpenAiResponseRepository $openAIResponseRepository
+     * @param CompetenciesRequestConfigurator $competenciesRequestConfigurator
+     * @param MainSettingsService $mainSettingsService
+     */
     public function __construct(
         private string $apiKey,
         private OpenAIResponseRepository $openAIResponseRepository,
-        private readonly CompetenciesRequestConfigurator $competenciesRequestConfigurator
+        private readonly CompetenciesRequestConfigurator $competenciesRequestConfigurator,
+        private MainSettingsService $mainSettingsService
     )
     {
     }
@@ -24,19 +32,43 @@ class OpenAiService
         return $this->openAIResponseRepository->findAll();
     }
 
+    /**
+     * @return CompetenciesRequestConfigurator
+     */
     public function getConfigurator(): CompetenciesRequestConfigurator
     {
         return $this->competenciesRequestConfigurator;
     }
 
+    /**
+     * @param $entity
+     * @return void
+     */
     public function save($entity): void
     {
         $this->openAIResponseRepository->save($entity, true);
     }
 
+    /**
+     * @param $prompt
+     * @return mixed
+     */
     public function getAnswerByMessage($prompt): mixed
     {
-        $client = OpenAI::client($this->apiKey);
+        try {
+            $settings = $this->mainSettingsService->findSettingsById(1);
+            if(is_null($settings->getOpenAIApiKey())) {
+                $apiKey = $this->apiKey;
+            } else {
+                $apiKey = $settings->getOpenAIApiKey();
+            }
+        } catch (\Exception $e) {
+            $apiKey = $this->apiKey;
+        }
+
+
+
+        $client = OpenAI::client($apiKey);
 
         $competenceDefinition = 'Тебе дано определение слова Профессиональная компетенция: Профессиональная компетенция - это знания, умения и опыт, необходимые для работы в конкретной профессии. Она включает теоретические основы, практическое применение и опыт работы.';
         $competenceDefinition = $this->competenciesRequestConfigurator->definition;
