@@ -87,6 +87,7 @@ class MainAdminPanelController extends AbstractDashboardController
 
         try {
             $vacanciesList = $this->djangoService->getVacanciesListByName($request->get('queryName'));
+            $success = true;
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
             $success = false;
@@ -100,7 +101,7 @@ class MainAdminPanelController extends AbstractDashboardController
                 'vacanciesStats' => $vacanciesList->getVacanciesStats(),
                 'vacanciesName' => $vacanciesList->getVacanciesNames(),
                 'success' => $success,
-                'errorMessage' => $errorMessage
+                'errorMessage' => $errorMessage ?? 'no error',
             ]);
     }
 
