@@ -10,8 +10,8 @@ class UserFields
 {
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
     private ?int $id = null;
 
 

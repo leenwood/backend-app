@@ -67,9 +67,7 @@ class MainUserService
         string  $password
     ): bool
     {
-        $name = $this->translatorService->translate($name);
-        $surname = $this->translatorService->translate($surname);
-        $patronymic = $this->translatorService->translate($patronymic);
+
 
         if (preg_match("/[А-Яа-я]/", $email)) {
             $this->logger->error("UserService | Incorrect email value exception: " . $email);
@@ -82,6 +80,10 @@ class MainUserService
         $userFields->setPatronymic($patronymic);
         $userFields->setEmail($email);
 
+
+        $name = $this->translatorService->translate($name);
+        $surname = $this->translatorService->translate($surname);
+        $patronymic = $this->translatorService->translate($patronymic);
 
         #создаем аккаунт для авторизации
         $account = new Account();
