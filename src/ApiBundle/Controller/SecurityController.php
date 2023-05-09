@@ -22,23 +22,11 @@ class SecurityController extends AbstractFOSRestController
      * @param RegisterNewAccountHandler $registerNewAccountHandler
      */
     public function __construct(
-        private CheckUserHandler          $checkUserHandler,
         private RegisterNewAccountHandler $registerNewAccountHandler
     )
     {
     }
 
-
-    #[Rest\Post('api/login_check')]
-    #[Rest\RequestParam(name: 'username', nullable: true)]
-    #[Rest\RequestParam(name: 'password', nullable: true)]
-    public function login(
-        ParamFetcherInterface $fetcher
-    )
-    {
-        $result = ($this->checkUserHandler)(new CheckUserCommand($fetcher->get('username'), $fetcher->get('password')));
-        dd($result);
-    }
 
 
     /**

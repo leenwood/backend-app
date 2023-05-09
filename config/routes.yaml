@@ -12,4 +12,3 @@ admin-panel:
 
 api_login_check:
     path: /api/login_check
-    controller: App\ApiBundle\SecurityController::login

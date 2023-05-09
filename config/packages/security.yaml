@@ -11,6 +11,16 @@ security:
         class: App\AccountBundle\Entity\Account
         property: username
   firewalls:
+    login:
+      pattern: ^/api/login
+      stateless: true
+      provider: app_user_provider
+      json_login:
+        check_path: /api/login_check
+        username_path: username
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        require_previous_session: false
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
@@ -22,14 +32,7 @@ security:
         path: app_logout
         # where to redirect after logout
         # target: app_any_route
-    login:
-      pattern: ^/api/login
-      stateless: true
-      json_login:
-        check_path: /api/login_check
-        username_path: username
-        success_handler: lexik_jwt_authentication.handler.authentication_success
-        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
 # https://youtu.be/3K9YCIC3-iw
     api:
       pattern: ^/api
@@ -39,9 +42,9 @@ security:
   access_control:
     - { path: ^/admin, roles: [ ROLE_ADMIN, ROLE_ANALYST ] }
     - { path: ^/bundles, roles: PUBLIC_ACCESS }
-    - { path: ^/api/login, roles: PUBLIC_ACCESS }
-    - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-    - { path: ^/api/registration, roles: PUBLIC_ACCESS }
+    - { path: /api/login, roles: PUBLIC_ACCESS }
+    - { path: /api/login_check, roles: PUBLIC_ACCESS }
+    - { path: /api/registration, roles: PUBLIC_ACCESS }
     - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
