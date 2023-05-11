@@ -65,7 +65,7 @@ class MainUserService
         ?string $patronymic,
         string  $email,
         string  $password
-    ): bool
+    ): ?Account
     {
 
 
@@ -107,10 +107,10 @@ class MainUserService
             $this->accountRepository->save($account);
         } catch (\Exception $e) {
             $this->logger->error(sprintf("UserService | %s", $e));
-            return false;
+            return null;
         }
 
-        return true;
+        return $account;
     }
 
 }

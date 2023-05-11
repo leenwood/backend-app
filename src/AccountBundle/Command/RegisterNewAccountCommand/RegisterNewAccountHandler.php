@@ -2,6 +2,7 @@
 
 namespace App\AccountBundle\Command\RegisterNewAccountCommand;
 
+use App\AccountBundle\Entity\Account;
 use App\AccountBundle\Exception\IncorrectValueException;
 use App\AccountBundle\Service\MainUserService;
 
@@ -19,10 +20,10 @@ class RegisterNewAccountHandler
 
     /**
      * @param RegisterNewAccountCommand $command
-     * @return bool
+     * @return Account|null
      * @throws IncorrectValueException
      */
-    public function __invoke(RegisterNewAccountCommand $command): bool
+    public function __invoke(RegisterNewAccountCommand $command): ?Account
     {
         return $this->mainUserService->registerNewUser(
             $command->name,
