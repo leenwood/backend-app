@@ -5,6 +5,8 @@ namespace App\AdminBundle\Controller\Admin;
 use App\AccountBundle\Entity\Account;
 use App\AdminBundle\Controller\Admin\CRUD\AccountCrudController;
 use App\AdminBundle\Entity\OpenAiResponse;
+use App\AdminBundle\Entity\Settings;
+use App\AdminBundle\Form\SettingsType;
 use App\AdminBundle\Repository\OpenAiResponseRepository;
 use App\AdminBundle\Service\DjangoBackendService\DjangoService;
 use App\AdminBundle\Service\DjangoBackendService\DTO\VacanciesListResponse;
@@ -12,6 +14,7 @@ use App\AdminBundle\Service\DjangoBackendService\DTO\VacancySkillStat;
 use App\AdminBundle\Service\DonationService\DonateUserService;
 use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\OpenAiService\OpenAiService;
+use App\AdminBundle\Service\Settings\MainSettingsService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -30,7 +33,8 @@ class MainAdminPanelController extends AbstractDashboardController
         private DonateUserService             $donateUserService,
         private GoalService                   $goalService,
         private OpenAiService                 $openAiService,
-        private LoggerInterface               $logger
+        private LoggerInterface               $logger,
+        private MainSettingsService           $mainSettingsService,
     )
     {
     }
@@ -56,7 +60,13 @@ class MainAdminPanelController extends AbstractDashboardController
     {
         yield MenuItem::section('Symfony backend', 'fas fa-angle-double-down');
         yield MenuItem::LinkToCrud('Accounts', 'fas fa-list', Account::class);
-        yield MenuItem::linkToRoute("Donation Wall", 'fas fa-arrow-alt-circle-right', 'app_donation_wall');
+        yield MenuItem::linkToRoute("Donation Wall", 'fa-thumbs-up', 'app_donation_wall');
+
+        if(in_array('ROLE_ADMIN', $this->getUser()?->getRoles()))
+        {
+            yield MenuItem::linkToRoute("Settings", 'fa fa-cog', 'app_settings', ['id' => 1]);
+        }
+
         yield MenuItem::section('Other backend', 'fas fa-angle-double-down');
         yield MenuItem::linkToRoute("HH analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_search_page');
         yield MenuItem::linkToRoute("OpenAI analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_openai_page');
@@ -77,6 +87,7 @@ class MainAdminPanelController extends AbstractDashboardController
 
         try {
             $vacanciesList = $this->djangoService->getVacanciesListByName($request->get('queryName'));
+            $success = true;
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
             $success = false;
@@ -90,7 +101,7 @@ class MainAdminPanelController extends AbstractDashboardController
                 'vacanciesStats' => $vacanciesList->getVacanciesStats(),
                 'vacanciesName' => $vacanciesList->getVacanciesNames(),
                 'success' => $success,
-                'errorMessage' => $errorMessage
+                'errorMessage' => $errorMessage ?? 'no error',
             ]);
     }
 
@@ -138,6 +149,37 @@ class MainAdminPanelController extends AbstractDashboardController
             'donationUsers' => $donationUsers
         ]);
     }
+
+    #[Route(path: '/admin/settings/{id}', name: 'app_settings', methods: 'GET')]
+    public function editSettings(
+        int $id
+    ): Response
+    {
+        $settings = $this->mainSettingsService->findSettingsById($id);
+
+        $form = $this->createForm(SettingsType::class, $settings);
+
+        return $this->render('admin\settings\main.html.twig', [
+            'form' => $form->createView(),
+            'id' => $id
+        ]);
+    }
+
+    #[Route(path: '/admin/settings/{id}', name: 'app_settings_update', methods: 'POST')]
+    public function updateSettings(Request $request, int $id): Response
+    {
+        $settings = $this->mainSettingsService->findSettingsById($id);
+        $form = $this->createForm(SettingsType::class, $settings);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->mainSettingsService->saveSettings($settings);
+        }
+
+        return $this->redirectToRoute('app_settings', ['id' => $settings->getId()]);
+    }
+
 
     #[Route(path: '/admin/analytics/openai/question', name: 'admin_analytics_openai_page',)]
     public function analyticsOpenAiPage(): Response

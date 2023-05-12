@@ -23,6 +23,7 @@ services:
         arguments:
             $apiKey: '%openapi_key%'
 
+
     App\AdminBundle\Service\OpenAiService\CompetenciesRequestConfigurator:
         arguments:
             $definition: '%definition%'
