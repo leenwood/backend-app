@@ -27,6 +27,9 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\OneToOne(targetEntity: UserFields::class)]
+    private ?UserFields $userFields;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -96,4 +99,22 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+    /**
+     * @return UserFields|null
+     */
+    public function getUserFields(): ?UserFields
+    {
+        return $this->userFields;
+    }
+
+    /**
+     * @param UserFields|null $userFields
+     */
+    public function setUserFields(?UserFields $userFields): void
+    {
+        $this->userFields = $userFields;
+    }
+
+
 }
