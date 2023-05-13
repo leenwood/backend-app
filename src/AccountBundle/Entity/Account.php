@@ -4,6 +4,7 @@ namespace App\AccountBundle\Entity;
 
 use App\AccountBundle\Repository\AccountRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -21,9 +22,13 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isActive = false;
+
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
+    #[Serializer\Exclude()]
     #[ORM\Column]
     private ?string $password = null;
 
