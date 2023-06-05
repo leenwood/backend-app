@@ -4,6 +4,7 @@ namespace App\AccountBundle\Repository;
 
 
 use App\AccountBundle\Entity\Account;
+use App\AccountBundle\Exception\NotFoundAccountWithRoleException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -55,5 +56,33 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
         $user->setPassword($newHashedPassword);
 
         $this->save($user, true);
+    }
+
+    /**
+     * @param string $role
+     * @return array
+     * @throws NotFoundAccountWithRoleException
+     */
+    public function getAccountsByRole(string $role): array
+    {
+
+        $rsm = $this->createResultSetMappingBuilder('a');
+
+        $rawQuery = sprintf(
+            'SELECT %s
+        FROM account a
+        WHERE a.roles::jsonb ?? :role', //Работать будет только у пгбд
+            $rsm->generateSelectClause()
+        );
+
+        $query = $this->getEntityManager()->createNativeQuery($rawQuery, $rsm);
+        $query->setParameter('role', $role);
+
+        $result = $query->getResult();
+
+        if (is_null($result) || empty($result)) {
+            throw new NotFoundAccountWithRoleException(sprintf("Not found account with role: %s", $role));
+        }
+        return $result;
     }
 }

@@ -91,8 +91,6 @@ class MainUserService
         $account->setRoles(['ROLE_USER']);
         $account->setPassword($this->hasher->hashPassword($account, $password));
 
-
-
         //TODO переписать функцию сохранения, что б она возращала значение сохраненное и убрать строчку с поиском аккаунта.
         //TODO вообще все это переписать надо, сейчас просто срочно надо сделать
         try {
@@ -111,6 +109,18 @@ class MainUserService
         }
 
         return $account;
+    }
+
+
+    public function getTeacherAccount(): array
+    {
+        try {
+            return $this->accountRepository->getAccountsByRole("ROLE_TEACHER");
+
+        } catch (\Throwable $e)
+        {
+            dd($e);
+        }
     }
 
 }

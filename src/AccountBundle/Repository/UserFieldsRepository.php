@@ -4,6 +4,7 @@ namespace App\AccountBundle\Repository;
 
 
 use App\AccountBundle\Entity\UserFields;
+use App\AccountBundle\Exception\NotFoundAccountWithRoleException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -2,6 +2,8 @@
 
 namespace App\ApiBundle\Controller;
 
+use App\AccountBundle\Command\GetTeachersCommand\GetTeachersCommand;
+use App\AccountBundle\Command\GetTeachersCommand\GetTeachersHandler;
 use App\ApiBundle\Mock\TeachersMock;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -12,17 +14,23 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 #[Route('api/directions/', name: 'app_api_')]
 class DirectionsController extends AbstractFOSRestController
 {
-
-    #[Rest\Get(path: 'teachers', name: 'teachers_get')]
-    public function getTeachers(
-        TeachersMock $teachersMock
-    ): Response
+    /**
+     * @param GetTeachersHandler $getTeachersHandler
+     */
+    public function __construct(
+        private GetTeachersHandler $getTeachersHandler
+    )
     {
-        return $this->handleView($this->view($teachersMock->getAllTeachers()));
-
     }
 
-    #[Rest\Get(path: 'teacher/{id}', name: 'teacher_get')]
+
+    #[Rest\Get(path: 'teachers', name: 'teachers_get')]
+    public function getTeachers(): Response
+    {
+        return $this->handleView($this->view(($this->getTeachersHandler)(new GetTeachersCommand())));
+    }
+
+    #[Rest\Get(path: 'teacher/{id}', name: 'teacher_get_by_id')]
     public function getTeacher(
         int $id,
         TeachersMock $teachersMock

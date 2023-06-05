@@ -22,7 +22,7 @@ class UserFields
     #[ORM\Column(type: "string")]
     private ?string $name = null;
 
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: "string", nullable: true)]
     private ?string $patronymic = null;
 
     #[ORM\Column(type: "string")]
@@ -30,6 +30,17 @@ class UserFields
 
     #[ORM\Column(type: "string")]
     private ?string $email = null;
+
+    #[ORM\Column(type: "string", nullable: true)]
+    private ?string $studentIDNumber = null;
+
+    #[ORM\Column(type: "string", nullable: true)]
+    private ?string $studentGroup = null;
+
+    #[ORM\Column(type: "string", nullable: true)]
+    private ?string $educationalDirection = null;
+
+
 
     /**
      * @return int|null
@@ -118,4 +129,54 @@ class UserFields
     {
         $this->email = $email;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getStudentIDNumber(): ?string
+    {
+        return $this->studentIDNumber;
+    }
+
+    /**
+     * @param string|null $studentIDNumber
+     */
+    public function setStudentIDNumber(?string $studentIDNumber): void
+    {
+        $this->studentIDNumber = $studentIDNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStudentGroup(): ?string
+    {
+        return $this->studentGroup;
+    }
+
+    /**
+     * @param string|null $studentGroup
+     */
+    public function setStudentGroup(?string $studentGroup): void
+    {
+        $this->studentGroup = $studentGroup;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEducationalDirection(): ?string
+    {
+        return $this->educationalDirection;
+    }
+
+    /**
+     * @param string|null $educationalDirection
+     */
+    public function setEducationalDirection(?string $educationalDirection): void
+    {
+        $this->educationalDirection = $educationalDirection;
+    }
+
+
 }

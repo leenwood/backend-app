@@ -87,7 +87,6 @@ class SecurityController extends AbstractFOSRestController
                 'exception' => 'Internal Server Error :('
             ]));
         }
-
         return $this->handleView($this->view([
             'success' => true,
             'token' => $tokenManager->create($account)
