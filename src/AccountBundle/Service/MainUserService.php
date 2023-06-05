@@ -112,6 +112,9 @@ class MainUserService
     }
 
 
+    /**
+     * @return array
+     */
     public function getTeacherAccount(): array
     {
         try {
@@ -121,6 +124,15 @@ class MainUserService
         {
             dd($e);
         }
+    }
+
+    /**
+     * @param int $id
+     * @return Account
+     */
+    public function findById(int $id): Account
+    {
+        return $this->accountRepository->findOneBy(['id' => $id]);
     }
 
 }

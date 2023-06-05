@@ -2,9 +2,10 @@
 
 namespace App\ApiBundle\Controller;
 
+use App\AccountBundle\Command\GetTeacherByIdCommand\GetTeacherByIdCommand;
+use App\AccountBundle\Command\GetTeacherByIdCommand\GetTeacherByIdHandler;
 use App\AccountBundle\Command\GetTeachersCommand\GetTeachersCommand;
 use App\AccountBundle\Command\GetTeachersCommand\GetTeachersHandler;
-use App\ApiBundle\Mock\TeachersMock;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -16,9 +17,11 @@ class DirectionsController extends AbstractFOSRestController
 {
     /**
      * @param GetTeachersHandler $getTeachersHandler
+     * @param GetTeacherByIdHandler $getTeacherByIdHandler
      */
     public function __construct(
-        private GetTeachersHandler $getTeachersHandler
+        private GetTeachersHandler $getTeachersHandler,
+        private GetTeacherByIdHandler $getTeacherByIdHandler
     )
     {
     }
@@ -32,11 +35,10 @@ class DirectionsController extends AbstractFOSRestController
 
     #[Rest\Get(path: 'teacher/{id}', name: 'teacher_get_by_id')]
     public function getTeacher(
-        int $id,
-        TeachersMock $teachersMock
+        int $id
     ): Response
     {
-        return $this->handleView($this->view($teachersMock->getById($id)));
+        return $this->handleView($this->view(($this->getTeacherByIdHandler)(new GetTeacherByIdCommand($id))));
     }
 
     #[Rest\Get(path: 'me', name: 'user_by_token')]
