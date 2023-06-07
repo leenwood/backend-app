@@ -13,10 +13,15 @@ doctrine:
         mappings:
             App:
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/AccountBundle/Entity'
-                prefix: 'App\AccountBundle\Entity'
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
                 alias: App
-
+            DatabaseBundle:
+                is_bundle: true
+                type: attribute
+                dir: 'Entity'
+                prefix: 'App\DatabaseBundle\Entity'
 when@test:
     doctrine:
         dbal:
