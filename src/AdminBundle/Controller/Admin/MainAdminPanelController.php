@@ -16,6 +16,12 @@ use App\AdminBundle\Service\DonationService\GoalService;
 use App\AdminBundle\Service\OpenAiService\OpenAiService;
 use App\AdminBundle\Service\Settings\MainSettingsService;
 use App\AdminBundle\Service\SpreedSheetService\DownloadVacanciesStatsService;
+use App\DatabaseBundle\Entity\Course;
+use App\DatabaseBundle\Entity\Discipline;
+use App\DatabaseBundle\Entity\EducationProgram;
+use App\DatabaseBundle\Entity\Profession;
+use App\DatabaseBundle\Entity\Quantity;
+use App\DatabaseBundle\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -66,6 +72,14 @@ class MainAdminPanelController extends AbstractDashboardController
         {
             yield MenuItem::linkToRoute("Settings", 'fa fa-cog', 'app_settings', ['id' => 1]);
         }
+
+        yield MenuItem::section('База графа', 'fas fa-angle-double-down');
+        yield MenuItem::LinkToCrud('Профессии', 'fas fa-list', Profession::class);
+        yield MenuItem::LinkToCrud('Тэги', 'fas fa-list', Tag::class);
+        yield MenuItem::LinkToCrud('Курсы', 'fas fa-list', Course::class);
+        yield MenuItem::LinkToCrud('Образовательные программы', 'fas fa-list', EducationProgram::class);
+        yield MenuItem::LinkToCrud('Множества', 'fas fa-list', Quantity::class);
+        yield MenuItem::LinkToCrud('Дисциплина', 'fas fa-list', Discipline::class);
 
         yield MenuItem::section('Other backend', 'fas fa-angle-double-down');
         yield MenuItem::linkToRoute("HH analytics", 'fas fa-arrow-alt-circle-right', 'admin_analytics_search_page');

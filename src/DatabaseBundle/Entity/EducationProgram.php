@@ -61,14 +61,14 @@ class EducationProgram
         return $this;
     }
 
-    public function getг�university(): ?string
+    public function getUniversity(): ?string
     {
-        return $this->г�university;
+        return $this->university;
     }
 
-    public function setг�university(?string $г�university): self
+    public function setUniversity(?string $university): self
     {
-        $this->г�university = $г�university;
+        $this->university = $university;
 
         return $this;
     }
