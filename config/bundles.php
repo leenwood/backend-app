@@ -1,6 +1,7 @@
 <?php
 
 return [
+    App\DatabaseBundle\DatabaseBundle::class => ['all' => true],
     App\AccountBundle\AccountBundle::class => ['all' => true],
     App\ApiBundle\ApiBundle::class => ['all' => true],
     App\AdminBundle\AdminBundle::class => ['all' => true],
